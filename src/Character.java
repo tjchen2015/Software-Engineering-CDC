@@ -18,10 +18,8 @@ public class Character {
         this.updated = true;
     }
 
-    public String[] toString(String command){
-        String[] characterString = {Integer.toString(clientNumber), Integer.toString(x), Integer.toString(y),
-                Integer.toString(dir), Integer.toString(velocity), command};
-
-        return characterString;
+    public String toString(){
+        return Integer.toString(clientNumber) + " " + Integer.toString(x) + " " + Integer.toString(y) + " "
+                + Integer.toString(dir) + " " + Integer.toString(velocity);
     }
 }

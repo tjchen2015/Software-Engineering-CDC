@@ -1,7 +1,7 @@
 /**
  * Created by Sandy on 2015/12/5.
  */
-public class Item {
+public class Item{
     public String name;
     public int index;
     public boolean shared;
@@ -20,10 +20,9 @@ public class Item {
         this.updated = true;
     }
 
-    public String[] toString(String command){
-        String[] itemString = {name, Integer.toString(index), Boolean.toString(shared),
-                Integer.toString(x), Integer.toString(y), Boolean.toString(owned), command};
-
-         return itemString;
+    @Override
+    public String toString() {
+        return name + " " + Integer.toString(index) + " " + Boolean.toString(shared) + " "
+                + Integer.toString(x) + " " + Integer.toString(y) + " " + Boolean.toString(owned);
     }
 }
