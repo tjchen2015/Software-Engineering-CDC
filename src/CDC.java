@@ -14,7 +14,7 @@ public class CDC {
 
     //initialize
     public void addVirtualCharacter (int clientno) throws ExceedMaxException {
-        assert !clientnoExist(clientno);//check if clientno already exists
+        assert !clientnoExist(clientno) : "clientno already exists";
 
         if (characterList.size() == 4){//at most 4 characters
             throw new ExceedMaxException();
@@ -26,15 +26,15 @@ public class CDC {
 
     //initialize
     public void addItem(String name, int index, boolean shared, int x, int y){
-        assert !itemNameExist(name, index);//check if item name, index already exists
+        assert !itemNameExist(name, index) : "item name / index already exists";
 
         Item item = new Item(name, index, shared, x, y);
         itemList.add(item);
     }
 
     public void updateDirection(int clientno, int moveCode){
-        assert clientnoExist(clientno);//check if clientno exists
-        assert 0<=moveCode && moveCode<4;//check if moveCode is valid (0~3)
+        assert clientnoExist(clientno) : "clientno does not exist";
+        assert (0<=moveCode && moveCode<4) : "invalid moveCode";
 
         Character character = getCertainCharacter(clientno);
         character.dir = moveCode;
@@ -43,7 +43,7 @@ public class CDC {
     }
 
     public void getItem(int clientno){
-        assert clientnoExist(clientno);//check if clientno exists
+        assert clientnoExist(clientno) : "clientno does not exist";
 
         Character character = getCertainCharacter(clientno);
         Iterator<Item> itemIterator = itemList.iterator();

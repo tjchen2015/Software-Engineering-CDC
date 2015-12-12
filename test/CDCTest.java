@@ -66,13 +66,17 @@ public class CDCTest {
 
     @org.junit.Test
     public void testUpdateDirection() throws Exception {
-        cdc.addVirtualCharacter(1);
-        //cdc.updateDirection(1, 2);
+        cdc.addVirtualCharacter(11);
+        cdc.addVirtualCharacter(121);
+        cdc.updateDirection(11, 2);
+        cdc.updateDirection(121, 4);
 
         Vector<Object> updateInfo = cdc.getUpdateInfo();
-        assertEquals(updateInfo.size(), 0);
-        Character character = (Character) updateInfo.get(2);
-        assertEquals(character.dir, 0);
+        assertEquals(updateInfo.size(), 2);
+        Character character = (Character) updateInfo.get(0);
+        assertEquals(character.dir, 2);
+        character = (Character) updateInfo.get(1);
+        assertEquals(character.dir, 4);
     }
 
     @org.junit.Test
