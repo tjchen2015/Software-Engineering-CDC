@@ -14,7 +14,7 @@ public class CDC {
 
     //initialize
     public void addVirtualCharacter (int clientno) throws ExceedMaxException {
-        assert clientnoExist(clientno);//check if clientno already exists
+        assert !clientnoExist(clientno);//check if clientno already exists
 
         if (characterList.size() == 4){//at most 4 characters
             throw new ExceedMaxException();
@@ -36,35 +36,28 @@ public class CDC {
         assert clientnoExist(clientno);//check if clientno exists
         assert 0<=moveCode && moveCode<4;//check if moveCode is valid (0~3)
 
-        Iterator<Character> it = characterList.iterator();
-        while (it.hasNext()){
-            Character character = it.next();
-            if (character.clientNumber == clientno){
-                character.dir = moveCode;
-                character.velocity = 2;//????????????
-                character.updated = true;
-                break;
-            }
-        }
+        Character character = getCertainCharacter(clientno);
+        character.dir = moveCode;
+        character.velocity = 2;//????????????
+        character.updated = true;
     }
 
     public void getItem(int clientno){
         assert clientnoExist(clientno);//check if clientno exists
 
-        Iterator<Character> characterIterator = characterList.iterator();
-        while (characterIterator.hasNext()) {
-            Character character = characterIterator.next();
-            if (character.clientNumber == clientno) {
-
-                Iterator<Item> itemIterator = itemList.iterator();
-                while (itemIterator.hasNext()) {
-                    Item item = itemIterator.next();
-                    if (item.x == character.x && item.y == character.y) {
-                        item.owned = true;
-                        item.updated = true;
-                    }
+        Character character = getCertainCharacter(clientno);
+        Iterator<Item> itemIterator = itemList.iterator();
+        while (itemIterator.hasNext()) {
+            Item item = itemIterator.next();
+            if (item.x == character.x && item.y == character.y) {
+                if (item.shared && !item.owned){//shared item and not owned
+                    item.owned = true;
+                    item.updated = true;
                 }
-
+                else if (!item.shared) {//not shared item
+                    item.updated = true;
+                }
+                break;
             }
         }
     }
@@ -97,6 +90,17 @@ public class CDC {
         UpdateThread updateThread = new UpdateThread(map, characterList);
         Thread thread = new Thread(updateThread);
         thread.start();
+    }
+
+    private Character getCertainCharacter(int clientno){
+        Iterator<Character> charIterator = characterList.iterator();
+        while (charIterator.hasNext()) {
+            Character character = charIterator.next();
+            if (character.clientNumber == clientno) {
+                return character;
+            }
+        }
+        throw new AssertionError("Character with clientno cannot be found");
     }
 
     private boolean clientnoExist(int clientno){
