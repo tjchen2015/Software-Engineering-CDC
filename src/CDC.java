@@ -6,10 +6,13 @@ public class CDC {
     private static ArrayList<Character> characterList;
     private static ArrayList<Item> itemList;
     private static int[][] map;
+    private static ThreadController threadController;
 
-    public CDC() {
+    public CDC(ThreadController threadController) {
         characterList = new ArrayList<Character>(4);
         itemList = new ArrayList<Item>();
+
+        this.threadController = threadController;
     }
 
     //initialize
@@ -27,6 +30,7 @@ public class CDC {
     //initialize
     public void addItem(String name, int index, boolean shared, int x, int y){
         assert !itemNameExist(name, index) : "item name / index already exists";
+        assert !itemPositionTaken(x, y) : "position taken by another item";
 
         Item item = new Item(name, index, shared, x, y);
         itemList.add(item);
@@ -55,8 +59,9 @@ public class CDC {
                     item.updated = true;
                 }
                 else if (!item.shared) {//not shared item
-                    item.updated = true;
+                    item.updated = true;//????????????
                 }
+                character.ownedItem.add(item);
                 break;
             }
         }
@@ -88,6 +93,8 @@ public class CDC {
 
     public void startUpdatingThread(){
         UpdateThread updateThread = new UpdateThread(map, characterList);
+        updateThread.setThreadController(threadController);
+
         Thread thread = new Thread(updateThread);
         thread.start();
     }
@@ -125,16 +132,14 @@ public class CDC {
         return false;
     }
 
-    private boolean itemExist(int checkX, int checkY){
+    private boolean itemPositionTaken(int checkX, int checkY){
         Iterator<Item> itemIterator = itemList.iterator();
         while (itemIterator.hasNext()){
             Item item = itemIterator.next();
             if (item.x==checkX && item.y==checkY){
-                if ((item.shared && !item.owned) || !item.shared){
-                    return true;
-                }
-                return false;
+                return true;
             }
+            return false;
         }
         return false;
     }

@@ -6,6 +6,11 @@ import java.util.ArrayList;
 public class UpdateThread implements Runnable{
     int[][] map;
     ArrayList<Character> characterList;
+    ThreadController threadController;
+
+    public void setThreadController(ThreadController threadController){
+        this.threadController = threadController;
+    }
 
     public UpdateThread(int[][] map, ArrayList<Character> characterList) {
         this.map = map;
@@ -15,18 +20,14 @@ public class UpdateThread implements Runnable{
     @Override
     public void run() {
         while (true){
-            try {
-                Thread.sleep(500);
+            threadController.blockThread();
 
-                for(int i=0; i<4; i++){
-                    Character character = characterList.get(i);//index = 0 or 1
-                    int[][] movement = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
-                    character.x = (int) (character.x + movement[character.dir][0]*character.velocity*0.5);
-                    character.y = (int) (character.y + movement[character.dir][1]*character.velocity*0.5);
-                    character.updated = true;
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            for(int i=0; i<4; i++){
+                Character character = characterList.get(i);//index = 0 or 1
+                int[][] movement = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+                character.x = (int) (character.x + movement[character.dir][0]*character.velocity*0.5);
+                character.y = (int) (character.y + movement[character.dir][1]*character.velocity*0.5);
+                character.updated = true;
             }
         }
     }
