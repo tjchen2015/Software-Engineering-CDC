@@ -123,6 +123,7 @@ public class CDCTest {
         cdc.startUpdatingThread();
         testThreadController.flag = false;
         testThreadController.flag = true;
+        Thread.sleep(5000);
 
         Vector<Object> updateInfo = cdc.getUpdateInfo();
         Character character = (Character) updateInfo.get(0);

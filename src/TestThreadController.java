@@ -6,12 +6,13 @@ public class TestThreadController implements ThreadController {
 
     @Override
     public void blockThread() {
-        while (flag){
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
+        while (flag)
+            ;
 
-            }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+
         }
     }
 }
