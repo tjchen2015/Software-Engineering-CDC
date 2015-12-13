@@ -24,32 +24,32 @@ public class CDCTest {
         //cdc.addVirtualCharacter(5);
 
         Vector<Object> updateInfo = cdc.getUpdateInfo();
-        assertEquals(updateInfo.size(), 3);
+        assertEquals(3, updateInfo.size());
 
         Character character = (Character) updateInfo.get(0);
-        assertEquals(character.clientNumber, 1);
-        assertEquals(character.x, 20);
-        assertEquals(character.y, 20);
-        assertEquals(character.dir, 0);
-        assertEquals(character.velocity, 0);
+        assertEquals(1, character.clientNumber);
+        assertEquals(20, character.x);
+        assertEquals(20, character.y);
+        assertEquals(0, character.dir);
+        assertEquals(0, character.velocity);
         character = (Character) updateInfo.get(1);
-        assertEquals(character.clientNumber, 2);
-        assertEquals(character.x, 20);
-        assertEquals(character.y, 20);
-        assertEquals(character.dir, 0);
-        assertEquals(character.velocity, 0);
+        assertEquals(2, character.clientNumber);
+        assertEquals(20, character.x);
+        assertEquals(20, character.y);
+        assertEquals(0, character.dir);
+        assertEquals(0, character.velocity);
         character = (Character) updateInfo.get(2);
-        assertEquals(character.clientNumber, 3);
-        assertEquals(character.x, 20);
-        assertEquals(character.y, 20);
-        assertEquals(character.dir, 0);
-        assertEquals(character.velocity, 0);
+        assertEquals(3, character.clientNumber);
+        assertEquals(20, character.x);
+        assertEquals(20, character.y);
+        assertEquals(0, character.dir);
+        assertEquals(0, character.velocity);
         /*character = (Character) updateInfo.get(3);
-        assertEquals(character.clientNumber, 4);
-        assertEquals(character.x, 20);
-        assertEquals(character.y, 20);
-        assertEquals(character.dir, 0);
-        assertEquals(character.velocity, 0);*/
+        assertEquals(4, character.clientNumber);
+        assertEquals(20, character.x);
+        assertEquals(20, character.y);
+        assertEquals(0, character.dir);
+        assertEquals(0, character.velocity);*/
     }
 
     @org.junit.Test
@@ -61,17 +61,17 @@ public class CDCTest {
         Vector<Object> updateInfo = cdc.getUpdateInfo();
         assertEquals(updateInfo.size(), 2);
         Item item = (Item) updateInfo.get(0);
-        assertEquals(item.name, "item1");
-        assertEquals(item.index, -1);
-        assertEquals(item.shared, true);
-        assertEquals(item.x, 1);
-        assertEquals(item.y, 1);
+        assertEquals("item1", item.name);
+        assertEquals(-1, item.index);
+        assertEquals(true, item.shared);
+        assertEquals(1, item.x);
+        assertEquals(1, item.y);
         item = (Item) updateInfo.get(1);
-        assertEquals(item.name, null);
-        assertEquals(item.index, 2);
-        assertEquals(item.shared, false);
-        assertEquals(item.x, 2);
-        assertEquals(item.y, 3);
+        assertEquals(null, item.name);
+        assertEquals(2, item.index);
+        assertEquals(false, item.shared);
+        assertEquals(2, item.x);
+        assertEquals(3, item.y);
     }
 
     @org.junit.Test
@@ -82,13 +82,13 @@ public class CDCTest {
         cdc.updateDirection(121, 3);
 
         Vector<Object> updateInfo = cdc.getUpdateInfo();
-        assertEquals(updateInfo.size(), 2);
+        assertEquals(2, updateInfo.size());
         Character character = (Character) updateInfo.get(0);
-        assertEquals(character.dir, 2);
-        assertEquals(character.velocity, 2);
+        assertEquals(2, character.dir);
+        assertEquals(2, character.velocity);
         character = (Character) updateInfo.get(1);
-        assertEquals(character.dir, 3);
-        assertEquals(character.velocity, 2);
+        assertEquals(3, character.dir);
+        assertEquals(2, character.velocity);
     }
 
     @org.junit.Test
@@ -100,7 +100,7 @@ public class CDCTest {
 
         Vector<Object> updateInfo = cdc.getUpdateInfo();
         Character character = (Character) updateInfo.get(0);
-        assertEquals(character.ownedItem.get(0).name, "item1");
+        assertEquals("item1", character.ownedItem.get(0).name);
     }
 
     @org.junit.Test
@@ -122,15 +122,22 @@ public class CDCTest {
 
         cdc.startUpdatingThread();
         testThreadController.flag = false;
+        Thread.sleep(500);
         testThreadController.flag = true;
-        Thread.sleep(5000);
+        Thread.sleep(2000);
 
         Vector<Object> updateInfo = cdc.getUpdateInfo();
         Character character = (Character) updateInfo.get(0);
-        assertEquals(character.x, 20);
-        assertEquals(character.y, 18);
+        assertEquals(20, character.x);
+        assertEquals(19, character.y);
         character = (Character) updateInfo.get(1);
-        assertEquals(character.x, 22);
-        assertEquals(character.y, 20);
+        assertEquals(21, character.x);
+        assertEquals(20, character.y);
+        character = (Character) updateInfo.get(2);
+        assertEquals(20, character.x);
+        assertEquals(21, character.y);
+        character = (Character) updateInfo.get(3);
+        assertEquals(19, character.x);
+        assertEquals(20, character.y);
     }
 }
