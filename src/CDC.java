@@ -29,7 +29,7 @@ public class CDC {
 
     //initialize
     public void addItem(String name, int index, boolean shared, int x, int y){
-        assert !itemNameExist(name, index) : "item name / index already exists";
+        //assert !itemNameExist(name, index) : "item name / index already exists";
         assert !itemPositionTaken(x, y) : "position taken by another item";
 
         Item item = new Item(name, index, shared, x, y);
@@ -139,7 +139,6 @@ public class CDC {
             if (item.x==checkX && item.y==checkY){
                 return true;
             }
-            return false;
         }
         return false;
     }

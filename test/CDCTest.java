@@ -15,16 +15,15 @@ public class CDCTest {
         cdc = new CDC(testThreadController);
     }
 
-    @org.junit.Test //(expected = ExceedMaxException.class)
-    public void testAddVirtualCharacter() throws ExceedMaxException {
+    @org.junit.Test
+    public void testAddVirtualCharacter() throws ExceedMaxException{
         cdc.addVirtualCharacter(1);
         cdc.addVirtualCharacter(2);
         cdc.addVirtualCharacter(3);
-        //cdc.addVirtualCharacter(4);
-        //cdc.addVirtualCharacter(5);
+        cdc.addVirtualCharacter(4);
 
         Vector<Object> updateInfo = cdc.getUpdateInfo();
-        assertEquals(3, updateInfo.size());
+        assertEquals(4, updateInfo.size());
 
         Character character = (Character) updateInfo.get(0);
         assertEquals(1, character.clientNumber);
@@ -44,22 +43,38 @@ public class CDCTest {
         assertEquals(20, character.y);
         assertEquals(0, character.dir);
         assertEquals(0, character.velocity);
-        /*character = (Character) updateInfo.get(3);
+        character = (Character) updateInfo.get(3);
         assertEquals(4, character.clientNumber);
         assertEquals(20, character.x);
         assertEquals(20, character.y);
         assertEquals(0, character.dir);
-        assertEquals(0, character.velocity);*/
+        assertEquals(0, character.velocity);
+    }
+
+    @org.junit.Test (expected = AssertionError.class)
+    public void testAddSameVirtualCharacter() throws AssertionError, ExceedMaxException {
+        cdc.addVirtualCharacter(1);
+        cdc.addVirtualCharacter(2);
+        cdc.addVirtualCharacter(2);
+    }
+
+    @org.junit.Test (expected = ExceedMaxException.class)
+    public void testAddExceededVirtualCharacter() throws ExceedMaxException{
+        cdc.addVirtualCharacter(1);
+        cdc.addVirtualCharacter(2);
+        cdc.addVirtualCharacter(3);
+        cdc.addVirtualCharacter(4);
+        cdc.addVirtualCharacter(5);
     }
 
     @org.junit.Test
     public void testAddItem() throws Exception {
         cdc.addItem("item1", -1, true, 1, 1);
         cdc.addItem(null, 2, false, 2, 3);
-        //cdc.addItem("item1", 2, false, 2, 2);
+        cdc.addItem("item1", 6, true, 5, 2);
 
         Vector<Object> updateInfo = cdc.getUpdateInfo();
-        assertEquals(updateInfo.size(), 2);
+        assertEquals(updateInfo.size(), 3);
         Item item = (Item) updateInfo.get(0);
         assertEquals("item1", item.name);
         assertEquals(-1, item.index);
@@ -72,6 +87,19 @@ public class CDCTest {
         assertEquals(false, item.shared);
         assertEquals(2, item.x);
         assertEquals(3, item.y);
+        item = (Item) updateInfo.get(2);
+        assertEquals("item1", item.name);
+        assertEquals(6, item.index);
+        assertEquals(true, item.shared);
+        assertEquals(5, item.x);
+        assertEquals(2, item.y);
+    }
+
+    @org.junit.Test (expected = AssertionError.class)
+    public void testAddSamePositionItem() throws Exception{
+        cdc.addItem("item1", -1, true, 1, 1);
+        cdc.addItem(null, 3, false, 2, 3);
+        cdc.addItem("item3", 4, false, 2, 3);
     }
 
     @org.junit.Test
@@ -91,8 +119,24 @@ public class CDCTest {
         assertEquals(2, character.velocity);
     }
 
+    @org.junit.Test (expected = AssertionError.class)
+    public void testNoClientnoUpdateDirection() throws Exception {
+        cdc.addVirtualCharacter(11);
+        cdc.addVirtualCharacter(121);
+
+        cdc.updateDirection(111, 2);
+    }
+
+    @org.junit.Test (expected = AssertionError.class)
+    public void testUpdateInvalidDirection() throws Exception {
+        cdc.addVirtualCharacter(11);
+        cdc.addVirtualCharacter(121);
+
+        cdc.updateDirection(11, 5);
+    }
+
     @org.junit.Test
-    public void testGetItem() throws Exception {
+    public void testGetSharedItem() throws Exception {
         cdc.addVirtualCharacter(2);
         cdc.addItem("item1", 2, true, 20, 20);
 
@@ -104,9 +148,57 @@ public class CDCTest {
     }
 
     @org.junit.Test
-    public void testGetUpdateInfo() throws Exception {
+    public void testGetNonSharedItem() throws Exception{
+        cdc.addVirtualCharacter(1);
+        cdc.addItem("item", -1, false, 20, 20);
+
+        cdc.getItem(1);
+
         Vector<Object> updateInfo = cdc.getUpdateInfo();
-        assertTrue(updateInfo.isEmpty());
+        Character character = (Character) updateInfo.get(0);
+        assertEquals("item", character.ownedItem.get(0).name);
+    }
+
+    @org.junit.Test (expected = AssertionError.class)
+    public void testClientnoGetItem() throws Exception {
+        cdc.addVirtualCharacter(1);
+        cdc.addItem("item", 2, true, 20, 20);
+
+        cdc.getItem(3);
+    }
+
+    @org.junit.Test
+    public void testGetUpdateInfo() throws Exception {
+        cdc.addVirtualCharacter(1);
+        cdc.addVirtualCharacter(2);
+        cdc.addItem("item 1", -1, true, 3, 4);
+        cdc.addItem(null, 2, false, 5, 1);
+
+        Vector<Object> updateInfo = cdc.getUpdateInfo();
+        Character character = (Character) updateInfo.get(0);
+        assertEquals(1, character.clientNumber);
+        assertEquals(20, character.x);
+        assertEquals(20, character.y);
+        assertEquals(0, character.dir);
+        assertEquals(0, character.velocity);
+        character = (Character) updateInfo.get(1);
+        assertEquals(2, character.clientNumber);
+        assertEquals(20, character.x);
+        assertEquals(20, character.y);
+        assertEquals(0, character.dir);
+        assertEquals(0, character.velocity);
+        Item item = (Item) updateInfo.get(2);
+        assertEquals("item 1", item.name);
+        assertEquals(-1, item.index);
+        assertEquals(true, item.shared);
+        assertEquals(3, item.x);
+        assertEquals(4, item.y);
+        item = (Item) updateInfo.get(3);
+        assertEquals(null, item.name);
+        assertEquals(2, item.index);
+        assertEquals(false, item.shared);
+        assertEquals(5, item.x);
+        assertEquals(1, item.y);
     }
 
     @org.junit.Test
